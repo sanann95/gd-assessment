@@ -1,6 +1,10 @@
 class ArticlesController < ApplicationController
   def index
-    @articles = Article.all
+    if params[:search].present?
+      @articles = Article.joins(:user).where('articles.title ILIKE ? OR users.name ILIKE ?', "%#{params[:search]}%", "%#{params[:search]}%").order(created_at: :desc)
+    else
+      @articles = Article.all.order(created_at: :desc)
+    end
   end
 
   def show
@@ -15,7 +19,7 @@ class ArticlesController < ApplicationController
     @article = Article.new(article_params)
 
     if @article.save
-      redirect_to @article
+      redirect_to articles_path
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +33,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
 
     if @article.update(article_params)
-      redirect_to @article
+      redirect_to articles_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -44,6 +48,6 @@ class ArticlesController < ApplicationController
 
   private
     def article_params
-      params.require(:article).permit(:title, :body, :status)
+      params.require(:article).permit(:title, :body, :status, :user_id)
     end
 end

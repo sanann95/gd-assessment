@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      redirect_to @user, notice: 'User was successfully created.'
+      redirect_to users_path, notice: 'User was successfully created.'
     else
       render :new
     end
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   def update
 	  @user = User.find(params[:id])
 	  if @user.update(user_params)
-	    redirect_to @user, notice: 'User was successfully updated.'
+	    redirect_to users_path, notice: 'User was successfully updated.'
 	  else
 	    render :edit
 	  end
@@ -42,10 +42,16 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    @article = User.find(params[:id])
-    @article.destroy
-
-    redirect_to users_url
+    @user = User.find(params[:id])
+    
+    if @user.articles.empty? && @user.comments.empty?
+      @user.destroy
+      redirect_to users_url, notice: 'User was successfully deleted.'
+    elsif @user.articles.any?
+      redirect_to users_url, alert: 'User has associated articles and cannot be deleted.'
+    else
+      redirect_to users_url, alert: 'User has associated comments and cannot be deleted.'
+    end
   end
 
   private
