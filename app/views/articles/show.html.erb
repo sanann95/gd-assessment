@@ -1,17 +1,31 @@
-<h1><%= @article.title %></h1>
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1><%= @article.title %></h1>
 
-<p><%= @article.body %></p>
+      <p><%= @article.body %></p>
 
-<ul>
-  <li><%= link_to "Edit", edit_article_path(@article) %></li>
-  <li><%= link_to "Destroy", article_path(@article), data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "Are you sure?"
-                  } %></li>
-</ul>
+      <ul class="list-inline">
+        <li class="list-inline-item"><%= link_to "Edit", edit_article_path(@article), class: "btn btn-primary" %></li>
+        <li class="list-inline-item"><%= link_to "Destroy", article_path(@article), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger", "data-turbo-method": "delete" %></li>
+      </ul>
 
-<h2>Comments</h2>
-<%= render @article.comments %>
+      <h2>Comments</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Commenter</th>
+            <th>Comment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @article.comments %>
+        </tbody>
+      </table>
 
-<h2>Add a comment:</h2>
-<%= render 'comments/form' %>
+      <h2>Add a comment:</h2>
+      <%= render 'comments/form' %>
+    </div>
+  </div>
+</div>
